@@ -8,7 +8,7 @@
 /**************************************************************/
 const COL_C = 'white';	    // These two const are part of the coloured 	
 const COL_B = '#CD7F32';	//  console.log for functions scheme
-console.log('%c fb_io.mjs', 'color: blue; background-color: white;');
+console.log('%c fb_io.mjs', 'color: blue; background-color: white;'); //DIAG
 
 /**************************************************************/
 // Import all external constants & functions required
@@ -17,17 +17,18 @@ console.log('%c fb_io.mjs', 'color: blue; background-color: white;');
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+
 /**************************************************************/
 // EXPORT FUNCTIONS
 // List all the functions called by code or html outside of this module
 /**************************************************************/
-export { fb_initialise, fb_authenticate };
+export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut };
 
 function fb_initialise() {
-    console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
+    console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
@@ -50,7 +51,7 @@ function fb_initialise() {
     console.info(FB_GAMEDB); //DIAG
 }
 function fb_authenticate() {
-    console.log('%c fb_authenticate: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
+    console.log('%c fb_authenticate: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
     const AUTH = getAuth();
     const PROVIDER = new GoogleAuthProvider();
@@ -60,11 +61,40 @@ function fb_authenticate() {
         prompt: 'select_account'
     });
     signInWithPopup(AUTH, PROVIDER).then((result) => {
-        console.log("Authentication successful");
-        console.log(result); //DIAG
+        console.log("Authentication successful"); //DIAG
+        console.log("User Email: " + result._tokenResponse.email); //DIAG
+        console.log("User Local ID: " + result._tokenResponse.localId); //DIAG
+        //console.log(result); //DIAG
     })
     .catch((error) => {
-        console.log("Authentication unsuccessful");
+        console.log("Authentication unsuccessful"); //DIAG
         console.log(error); //DIAG
+    });
+}
+function fb_detectAuthStateChanged() {
+    console.log('%c fb_detectAuthStateChanged: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+    const AUTH = getAuth();
+
+    onAuthStateChanged(AUTH, (user) => {
+        if (user) {
+            console.log("User hasn't changed");
+        } else {
+            console.log("User has changed");
+        }
+    }, (error) => {
+        console.log("Authorisation state detection error");
+        console.log(error);
+    });
+}
+function fb_logOut() {
+    console.log('%c fb_logOut: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+    const AUTH = getAuth();
+
+    signOut(AUTH).then(() => {
+        console.log("Successfully logged out");
+    })
+    .catch((error) => {
+        console.log("Logout error");
+        console.log(error);
     });
 }
