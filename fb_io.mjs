@@ -9,6 +9,7 @@
 const COL_C = 'white';	    // These two const are part of the coloured 	
 const COL_B = '#CD7F32';	//  console.log for functions scheme
 console.log('%c fb_io.mjs', 'color: blue; background-color: white;'); //DIAG
+var fb_gameDB;
 
 /**************************************************************/
 // Import all external constants & functions required
@@ -17,7 +18,7 @@ console.log('%c fb_io.mjs', 'color: blue; background-color: white;'); //DIAG
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
@@ -25,7 +26,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 // EXPORT FUNCTIONS
 // List all the functions called by code or html outside of this module
 /**************************************************************/
-export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut };
+export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_read, fb_readAll };
 
 function fb_initialise() {
     console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
@@ -47,8 +48,8 @@ function fb_initialise() {
     };
     
     const FB_GAMEAPP = initializeApp(FB_GAMECONFIG);
-    const FB_GAMEDB = getDatabase(FB_GAMEAPP);
-    console.info(FB_GAMEDB); //DIAG
+    fb_gameDB = getDatabase(FB_GAMEAPP);
+    console.info(fb_gameDB); //DIAG
 }
 function fb_authenticate() {
     console.log('%c fb_authenticate: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
@@ -95,6 +96,61 @@ function fb_logOut() {
     })
     .catch((error) => {
         console.log("Logout error");
+        console.log(error);
+    });
+}
+function fb_writeTo() {
+    console.log('%c fb_writeTo: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+
+    const REF = ref(fb_gameDB, "Users/UserID");
+    var UserInformation = {HighScore: 30, Name: "Scobb"}
+    
+    set(REF, UserInformation).then(() => {
+        console.log("Written the following information to the database:");
+        console.log(UserInformation);
+    }).catch((error) => {
+        console.log("Error with writing to the database");
+        console.log(error);
+    });
+}
+function fb_read() {
+    console.log('%c fb_read: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+
+    const REF = ref(fb_gameDB, "Users/UserID");
+
+    get(REF).then((snapshot) => {
+        var fb_data = snapshot.val();
+
+        if (fb_data != null) {
+            console.log("Successfully read database information:");
+            console.log(fb_data);
+
+        } else {
+            console.log("Attempting to read a value that doesn't exist");
+            console.log(fb_data);
+        }
+    }).catch((error) => {
+        console.log("Error with reading the database");
+        console.log(error);
+    });
+}
+function fb_readAll() {
+    console.log('%c fb_readAll: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+
+    const REF = ref(fb_gameDB, "Users");
+
+    get(REF).then((snapshot) => {
+        var fb_data = snapshot.val();
+
+        if (fb_data != null) {
+            console.log("Successfully read database information:");
+            console.log(fb_data);
+        } else {
+            console.log("Attempting to read a value that doesn't exist");
+            console.log(fb_data);
+        }
+    }).catch((error) => {
+        console.log("Error with reading the database");
         console.log(error);
     });
 }
