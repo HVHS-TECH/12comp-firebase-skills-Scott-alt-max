@@ -12,7 +12,7 @@ console.log('%c main.mjs', 'color: blue; background-color: white;'); //DIAG
 
 /**************************************************************/
 // Import all the constants & functions required from fb_io module
-import { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_read, fb_readAll } from './fb_io.mjs';
+import { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_read, fb_readAll, fb_update } from './fb_io.mjs';
     window.fb_initialise = fb_initialise;
     window.fb_authenticate = fb_authenticate;
     window.fb_detectAuthStateChanged = fb_detectAuthStateChanged;
@@ -20,6 +20,7 @@ import { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, f
     window.fb_writeTo = fb_writeTo;
     window.fb_read = fb_read;
     window.fb_readAll = fb_readAll;
+    window.fb_update = fb_update;
  
 /**************************************************************/
 // index.html main code
