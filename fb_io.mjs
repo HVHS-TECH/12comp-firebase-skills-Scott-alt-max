@@ -171,9 +171,9 @@ function fb_update() {
 function readSorted() {
     console.log('%c readSorted: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
-    const dbReference= query(ref(fb_gameDB, "Users/UserID"), orderByChild("HighScore"), limitToFirst(5));
+    const REF= query(ref(fb_gameDB, "Users/UserID"), orderByChild("HighScore"), limitToFirst(5));
 
-    get(dbReference).then((snapshot) => {
+    get(REF).then((snapshot) => {
         var fb_data = snapshot.val();
         if (fb_data != null) {
             console.log("Successfully read database information:");
