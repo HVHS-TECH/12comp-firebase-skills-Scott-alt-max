@@ -26,7 +26,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 // EXPORT FUNCTIONS
 // List all the functions called by code or html outside of this module
 /**************************************************************/
-export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_read, fb_readAll, fb_update };
+export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_writeJunk, fb_read, fb_readAll, fb_update, fb_readSorted };
 
 function fb_initialise() {
     console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
@@ -102,7 +102,7 @@ function fb_logOut() {
 function fb_writeTo() {
     console.log('%c fb_writeTo: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
-    const REF = ref(fb_gameDB, "Users/UserIDD");
+    const REF = ref(fb_gameDB, "Users/UserID2");
     var UserInformation = {HighScore: 30, Name: "Scobb"};
     
     set(REF, UserInformation).then(() => {
@@ -112,6 +112,23 @@ function fb_writeTo() {
         console.log("Error with writing to the database");
         console.log(error);
     });
+}
+function fb_writeJunk() {
+    console.log('%c fb_writeTo: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+
+    for (var i = 0; i < 100; i++) {
+        var filePath = "Users/UserID" + i;
+        const REF = ref(fb_gameDB, filePath);
+        var UserInformation = {HighScore: 30, Name: "Scobb"};
+        
+        set(REF, UserInformation).then(() => {
+            console.log("Written the following information to the database:");
+            console.log(UserInformation);
+        }).catch((error) => {
+            console.log("Error with writing to the database");
+            console.log(error);
+        });
+    }
 }
 function fb_read() {
     console.log('%c fb_read: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
@@ -168,15 +185,22 @@ function fb_update() {
         console.log(error);
     });
 }
-function readSorted() {
+function fb_readSorted() {
     console.log('%c readSorted: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
-    const REF= query(ref(fb_gameDB, "Users/UserID"), orderByChild("HighScore"), limitToFirst(5));
+    const REF= query(ref(fb_gameDB, "Users"), orderByChild("HighScore"), limitToFirst(2));
 
     get(REF).then((snapshot) => {
         var fb_data = snapshot.val();
         if (fb_data != null) {
             console.log("Successfully read database information:");
+            // Logging database data
+            /*get(REF).then((allScoreDataSnapshot) => {
+                allScoreDataSnapshot.forEach(function (userScoreSnapshot) {
+                    var obj = userScoreSnapshot.val();
+                    console.log(obj);
+                });
+            });*/
             console.log(fb_data);
         } else {
             console.log("Attempting to read a value that doesn't exist");
