@@ -1,0 +1,14 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "Users" : {
+      ".indexOn": "HighScore",
+      "*" : {
+        "Highscore" : {
+          ".indexOn" : ".value"
+        }
+      }
+    }
+  }
+}
