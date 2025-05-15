@@ -18,7 +18,7 @@ var fb_gameDB;
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, set, get, update, query, orderByChild, limitToFirst } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getDatabase, ref, set, get, update, query, orderByChild, limitToFirst, limitToLast } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
@@ -171,20 +171,16 @@ function fb_update() {
 function fb_readSorted() {
     console.log('%c readSorted: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
-    const REF= query(ref(fb_gameDB, "Users"), orderByChild("HighScore"), limitToFirst(100000));
+    const REF= query(ref(fb_gameDB, "Users"), orderByChild("HighScore"), limitToLast(5));
 
     get(REF).then((snapshot) => {
         var fb_data = snapshot.val();
         if (fb_data != null) {
             console.log("Successfully read database information:");
             // Logging database data
-            /*get(REF).then((allScoreDataSnapshot) => {
-                allScoreDataSnapshot.forEach(function (userScoreSnapshot) {
-                    var obj = userScoreSnapshot.val();
-                    console.log(obj);
-                });
-            });*/
-            console.log(fb_data);
+            snapshot.forEach(function (userScoreSnapshot) {
+                console.log(userScoreSnapshot.val()); //DIAG
+            });
         } else {
             console.log("Attempting to read a value that doesn't exist");
             console.log(fb_data);
