@@ -18,7 +18,7 @@ var fb_gameDB;
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, set, get, update, query, orderByChild, limitToFirst, limitToLast } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getDatabase, ref, set, get, update, query, orderByChild, limitToFirst, limitToLast, onValue, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
@@ -26,7 +26,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 // EXPORT FUNCTIONS
 // List all the functions called by code or html outside of this module
 /**************************************************************/
-export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_writeJunk, fb_read, fb_readAll, fb_update, fb_readSorted, wreakHavoc };
+export { fb_initialise, fb_authenticate, fb_detectAuthStateChanged, fb_logOut, fb_writeTo, fb_writeJunk, fb_read, fb_readAll, fb_update, fb_readSorted, fb_listenForChanges, fb_remove, wreakHavoc };
 
 function fb_initialise() {
     console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
@@ -102,8 +102,8 @@ function fb_logOut() {
 function fb_writeTo() {
     console.log('%c fb_writeTo: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
-    const REF = ref(fb_gameDB, "Users/UserID2");
-    var UserInformation = {HighScore: 30, Name: "Scobb"};
+    const REF = ref(fb_gameDB, "Users/UserID0");
+    var UserInformation = {HighScore: 101, Name: "Scobb"};
     
     set(REF, UserInformation).then(() => {
         console.log("Written the following information to the database:");
@@ -191,7 +191,7 @@ function fb_readSorted() {
     });
 }
 function fb_writeJunk() {
-    console.log('%c fb_writeTo: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+    console.log('%c fb_writeJunk: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
     for (var i = 0; i < 100; i++) {
         var randomNumber = Math.floor(Math.random() * 100) + 1;
@@ -200,7 +200,7 @@ function fb_writeJunk() {
         var UserInformation = {HighScore: randomNumber, Name: "Scobb"};
         
         set(REF, UserInformation).then(() => {
-            //console.log("Written the following information to the database:");
+            console.log("Written the information to the database");
             //console.log(UserInformation);
         }).catch((error) => {
             console.log("Error with writing to the database");
@@ -210,11 +210,42 @@ function fb_writeJunk() {
     
     console.log("Written the information to the database:");
 }
+function fb_listenForChanges() {
+    console.log('%c fb_listenForChanges: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+
+    var filePath = "Users/UserID0";
+    const REF = ref(fb_gameDB, filePath);
+
+    onValue(REF, (snapshot) => {
+        var fb_data = snapshot.val();
+
+        if (fb_data != null) {
+            console.log("Database information for file path " + filePath + " has changed to:");
+            console.log(fb_data);
+        } else {
+            console.log("Attempting to read a value that doesn't exist");
+            console.log(fb_data);
+        }
+    });
+}
+function fb_remove() {
+    console.log('%c fb_remove: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
+
+    var filePath = "/";
+    const REF = ref(fb_gameDB, filePath);
+
+    remove(REF).then(() => {
+        console.log("Successfully deleted the database"); //DIAG
+    }).catch((error) => {
+        console.log("Error with deleting the database"); //DIAG
+        console.log(error); //DIAG
+    });
+}
 function wreakHavoc() {
 
     var message = {You : "idiot"};
     // Max
-    /*{const FB_GAMECONFIG = {
+    {const FB_GAMECONFIG = {
         apiKey: "AIzaSyCHDtQ5nuCxgp_XCL_RtR7YVHv8mO1rhmc",
         authDomain: "comp-2025-max-bergman-4bb13.firebaseapp.com",
         databaseURL: "https://comp-2025-max-bergman-4bb13-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -238,10 +269,10 @@ function wreakHavoc() {
     }).catch((error) => {
         console.log("Error with writing to the database");
         console.log(error);
-    });}*/
+    });}
 
     // Joseph
-    {const FB_GAMECONFIG = {
+    /*{const FB_GAMECONFIG = {
         apiKey: "AIzaSyCtqOoxnHxsj7vs-AfrD8vo-20mA5Sq17A",
         authDomain: "comp-2025-joseph.firebaseapp.com",
         databaseURL: "https://comp-2025-joseph-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -265,5 +296,5 @@ function wreakHavoc() {
     }).catch((error) => {
         console.log("Error with writing to the database");
         console.log(error);
-    });}
+    });}*/
 }
