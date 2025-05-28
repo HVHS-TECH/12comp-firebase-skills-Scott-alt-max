@@ -213,7 +213,7 @@ function fb_writeJunk() {
 function fb_listenForChanges() {
     console.log('%c fb_listenForChanges: ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';'); //DIAG
 
-    var filePath = "Users/UserID0";
+    var filePath = "Users";
     const REF = ref(fb_gameDB, filePath);
 
     onValue(REF, (snapshot) => {
